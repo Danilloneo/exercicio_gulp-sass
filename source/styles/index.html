@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Danillo Guimarães">
+    <title>Gulp e Sass</title>
+    <link rel="stylesheet" href="/build/styles/main.css">
+</head>
+<body>
+    <center>
+        <h1 style="color: aliceblue;">Exercício de GULP - SASS</h1>
+        <h2 style="color: aliceblue;">O código: </h2>
+
+    <p style="color: aliceblue; text-wrap: wrap; max-width: 700px;">
+        const gulp = require('gulp');<br>
+        const sass = require('gulp-sass')(require('sass'));<br>
+        const sourceMaps = require('gulp-sourcemaps');<br>
+        const uglify = require('gulp-uglify');<br>
+        const imagemin = require ('gulp-imagemin');<br>
+
+        //Compilando o Sass com o Gulp após instalar as dependencias e criar as pastas<br>
+        //Aqui o CSS sai minificado por conta da função de saida outputStyle = compressed;<br>
+
+        function compilaSass(){<br>
+            return gulp.src('./source/styles/main.scss')<br>
+            .pipe(sourceMaps.init())<br>
+            .pipe(sass({<br>
+                outputStyle: 'compressed'<br>
+            }
+            <br>
+            ))<br>
+            .pipe(sourceMaps.write('./maps'))<br>
+            .pipe(gulp.dest('./build/styles'));<br>
+        }<br>
+
+        //comprime e diminui tamanho imagens<br>
+        //Dependencia imagemin<br>
+
+        function comprimeImages(){<br>
+            return gulp.src('source/images/*')<br>
+            .pipe(imagemin())<br>
+            .pipe(gulp.dest('./build/images'))<br>
+        }<br>
+
+        //comprime javascript colocando tudo em uma linha<br>
+        //Dependencia Uglify<br>
+        //Caso a gente queira obfuscar o código precisamos instalar o obfuscate<br>
+        //npm install --save-dev gulp-obfuscate<br>
+        //e a pós isso chamar a função e criar os pipes de obfuscação.<br>
+
+        function comprimeJavascript () {<br>
+            return gulp.src('./source/scripts/*.js')<br>
+            .pipe(uglify())<br>
+            .pipe(gulp.dest('./build/scripts'));<br>
+        }
+
+        //exportando as funções para que possa ser executanda no npm run gulp <br>
+
+        exports.default = function () {<br>
+            gulp.watch('./source/styles/*.scss', {ignoreInitial: false}, gulp.series(compilaSass));<br>
+            gulp.watch('./source/scripts/*.js', {ignoreInitial: false}, gulp.series(comprimeJavascript));<br>
+            gulp.watch('./source/images/*', {ignoreInitial: false}, gulp.series(comprimeImages));<br>
+        }<br>
+
+    </p>
+
+</center>
+</body>
+</html>
